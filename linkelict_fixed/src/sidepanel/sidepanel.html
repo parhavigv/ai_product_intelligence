@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkElict</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F3F2EF;
+      --surface: #FFFFFF;
+      --border: #E0E0E0;
+      --border-focus: #0A66C2;
+      --blue: #0A66C2;
+      --blue-hover: #084E96;
+      --blue-light: #EBF3FB;
+      --text: #212121;
+      --text2: #666666;
+      --text3: #999999;
+      --green: #057642;
+      --green-bg: #E8F5EE;
+      --amber: #915907;
+      --amber-bg: #FDF3E3;
+      --r-sm: 4px;
+      --r-md: 8px;
+      --r-lg: 24px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    html, body {
+      width: 400px;
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Header ─────────────────────────────────────── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand { display: flex; align-items: center; gap: 9px; }
+    .header-icon {
+      width: 32px; height: 32px;
+      background: var(--blue);
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-icon svg { width: 18px; height: 18px; }
+    .header-wordmark { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-wordmark span { color: var(--blue); }
+    .header-badge {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--blue);
+      background: var(--blue-light); padding: 2px 8px; border-radius: 10px;
+    }
+
+    /* ── Section / Card ─────────────────────────────── */
+    .section { margin: 12px 16px 0; }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--text3); margin-bottom: 8px; padding-left: 2px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-md); box-shadow: var(--shadow); overflow: hidden;
+    }
+
+    /* ── Status banner ──────────────────────────────── */
+    .status-banner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: var(--r-md);
+      font-size: 12px; font-weight: 500;
+    }
+    .status-banner.idle    { background: var(--bg); border: 1px solid var(--border); color: var(--text2); }
+    .status-banner.ready   { background: var(--blue-light); border: 1px solid #C0D9F0; color: var(--blue); }
+    .status-banner.warn    { background: var(--amber-bg); border: 1px solid #F0D5A8; color: var(--amber); }
+    .status-banner.success { background: var(--green-bg); border: 1px solid #A8D5BC; color: var(--green); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-idle    { background: var(--text3); }
+    .dot-ready   { background: var(--blue); }
+    .dot-warn    { background: var(--amber); }
+    .dot-success { background: var(--green); }
+    .dot-pulse   { background: var(--blue); animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* ── Target box ─────────────────────────────────── */
+    .target-card { padding: 14px; }
+    .input-row { display: flex; gap: 8px; align-items: center; }
+    .url-input {
+      flex: 1; height: 38px; padding: 0 12px;
+      font-size: 12px; font-family: var(--font); color: var(--text);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); outline: none; min-width: 0;
+      transition: border-color 0.15s;
+    }
+    .url-input:focus { border-color: var(--border-focus); background: var(--surface); }
+    .url-input::placeholder { color: var(--text3); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: var(--font); font-weight: 600; cursor: pointer; border: none;
+      border-radius: var(--r-lg); transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-target {
+      background: var(--blue); color: #fff; font-size: 12px;
+      padding: 0 14px; height: 38px; flex-shrink: 0; border-radius: var(--r-sm);
+    }
+    .btn-target:hover:not(:disabled) { background: var(--blue-hover); }
+    .target-hint {
+      margin-top: 8px; font-size: 11px; color: var(--text3);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    /* ── Checklist ──────────────────────────────────── */
+    .checklist-grid { display: grid; gap: 8px; }
+    .checklist-card { padding: 0; }
+    .checklist-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 14px 10px; border-bottom: 1px solid var(--border);
+      cursor: pointer; user-select: none;
+    }
+    .checklist-header:hover { background: #FAFAFA; }
+    .checklist-title-row { display: flex; align-items: center; gap: 9px; }
+    .checklist-icon {
+      width: 28px; height: 28px; border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .icon-identity { background: #EBF3FB; }
+    .icon-career   { background: #E8F5EE; }
+    .icon-activity { background: #FDF3E3; }
+    .checklist-title { font-size: 13px; font-weight: 600; }
+    .checklist-count { font-size: 11px; color: var(--text3); margin-top: 1px; }
+    .chevron { transition: transform 0.2s; color: var(--text3); flex-shrink: 0; }
+    .chevron.open { transform: rotate(180deg); }
+    .checklist-body { padding: 4px 0 8px; display: none; }
+    .checklist-body.open { display: block; }
+    .check-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px; cursor: pointer; transition: background 0.1s;
+    }
+    .check-item:hover { background: #FAFAFA; }
+    .check-item input[type="checkbox"] { display: none; }
+    .checkmark {
+      width: 18px; height: 18px; border: 2px solid var(--border);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s; background: var(--surface);
+    }
+    .check-item input:checked ~ .checkmark { background: var(--blue); border-color: var(--blue); }
+    .checkmark svg { display: none; }
+    .check-item input:checked ~ .checkmark svg { display: block; }
+    .check-label { font-size: 13px; flex: 1; }
+    .check-tag {
+      font-size: 10px; font-weight: 500; padding: 2px 7px;
+      border-radius: 10px; flex-shrink: 0;
+    }
+    .tag-core { background: var(--blue-light); color: var(--blue); }
+    .tag-rich { background: var(--green-bg); color: var(--green); }
+    .tag-beta { background: var(--amber-bg); color: var(--amber); }
+    .checklist-all {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 14px 4px; border-top: 1px solid var(--border); margin-top: 2px;
+    }
+    .select-all-btn {
+      font-size: 11px; font-weight: 600; color: var(--blue); background: none;
+      border: none; cursor: pointer; padding: 2px 0; font-family: var(--font);
+    }
+    .select-all-btn:hover { text-decoration: underline; }
+
+    /* ── Format selector ────────────────────────────── */
+    .format-row { display: flex; gap: 8px; }
+    .format-btn {
+      flex: 1; height: 40px; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      color: var(--text2); cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .format-btn:hover { border-color: #C0C0C0; color: var(--text); }
+    .format-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+    /* ── Results ────────────────────────────────────── */
+    .result-section { padding: 0; }
+    .result-head {
+      padding: 8px 14px 6px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase; color: var(--text3);
+      background: var(--bg); border-bottom: 1px solid var(--border);
+    }
+    .result-row {
+      display: flex; padding: 8px 14px; border-bottom: 1px solid #F5F5F5;
+      gap: 10px; align-items: flex-start;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-label {
+      font-size: 11px; color: var(--text3); min-width: 90px;
+      flex-shrink: 0; padding-top: 1px;
+    }
+    .result-value { font-size: 12px; line-height: 1.5; flex: 1; }
+    .result-value.muted { color: var(--text3); font-style: italic; }
+    .skill-wrap { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 14px; }
+    .skill-chip {
+      font-size: 11px; padding: 3px 10px; background: var(--blue-light);
+      border: 1px solid #C0D9F0; border-radius: 12px; color: var(--blue); font-weight: 500;
+    }
+
+    /* ── Progress ───────────────────────────────────── */
+    .progress-wrap { margin: 0 16px; display: none; }
+    .progress-wrap.visible { display: block; }
+    .progress-card { padding: 12px 14px; }
+    .progress-steps { display: flex; margin-bottom: 10px; }
+    .progress-step {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 4px; position: relative;
+    }
+    .progress-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 9px; left: 50%;
+      width: 100%; height: 2px; background: var(--border); z-index: 0;
+    }
+    .progress-step.done::after { background: var(--blue); }
+    .step-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; z-index: 1; position: relative; flex-shrink: 0;
+    }
+    .progress-step.done .step-dot    { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .progress-step.active .step-dot  { border-color: var(--blue); color: var(--blue); animation: pulse 1s infinite; }
+    .step-name { font-size: 9px; color: var(--text3); text-align: center; line-height: 1.2; }
+    .progress-step.done .step-name   { color: var(--blue); }
+    .progress-step.active .step-name { color: var(--blue); font-weight: 600; }
+    .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; background: var(--blue); border-radius: 2px; transition: width 0.4s ease; }
+    .progress-label { font-size: 11px; color: var(--text2); margin-top: 6px; text-align: center; }
+
+    /* ── Footer ─────────────────────────────────────── */
+    .action-footer { margin: 12px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+    .btn-extract {
+      width: 100%; height: 46px; background: var(--blue); color: #fff;
+      font-size: 15px; font-weight: 700; border: none; border-radius: var(--r-lg);
+      font-family: var(--font); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s; letter-spacing: 0.1px;
+    }
+    .btn-extract:hover:not(:disabled) { background: var(--blue-hover); }
+    .btn-extract:active:not(:disabled) { transform: scale(0.99); }
+    .btn-extract:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .footer-actions { display: flex; gap: 8px; }
+    .btn-secondary {
+      flex: 1; height: 36px; background: var(--surface);
+      color: var(--text2); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); font-size: 12px; font-weight: 600;
+      font-family: var(--font); cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="panel">
+
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-icon">
+        <svg viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="5" height="5" rx="1" fill="white"/>
+          <rect x="1" y="9" width="5" height="8" rx="1" fill="white"/>
+          <rect x="8" y="1" width="9" height="5" rx="1" fill="white"/>
+          <rect x="8" y="9" width="4" height="4" rx="1" fill="white" opacity="0.6"/>
+          <rect x="14" y="9" width="3" height="8" rx="1" fill="white" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="header-wordmark">Link<span>Elict</span></span>
+    </div>
+    <span class="header-badge">v3.0</span>
+  </header>
+
+  <div class="section">
+    <div class="status-banner idle" id="statusBanner">
+      <div class="status-dot dot-idle" id="statusDot"></div>
+      <span id="statusText">Navigate to a LinkedIn profile to begin</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Target Profile</div>
+    <div class="card target-card">
+      <div class="input-row">
+        <input type="url" class="url-input" id="urlInput" placeholder="https://linkedin.com/in/username" spellcheck="false" />
+        <button class="btn btn-target" id="btnTarget">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+          Target
+        </button>
+      </div>
+      <div class="target-hint">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Paste a LinkedIn URL and click Target to navigate
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Data to Extract</div>
+    <div class="checklist-grid">
+
+      <div class="card checklist-card">
+        <div class="checklist-header" data-group="identity">
+          <div class="checklist-title-row">
+            <div class="checklist-icon icon-identity">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A66C2" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <div class="checklist-title">Identity</div>
+              <div class="checklist-count" id="count-identity">5 of 5 selected</div>
+            </div>
+          </div>
+          <svg class="chevron open" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="checklist-body open" id="body-identity">
+          <label class="check-item"><input type="checkbox" name="identity" value="name" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Full Name</span><span class="check-tag tag-core">Core</span></label>
+          <label class="check-item"><input type="checkbox" name="identity" value="headline" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Headline</span><span class="check-tag tag-core">Core</span></label>
+          <label class="check-item"><input type="checkbox" name="identity" value="location" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Location</span><span class="check-tag tag-core">Core</span></label>
+          <label class="check-item"><input type="checkbox" name="identity" value="connections" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Connections</span><span class="check-tag tag-core">Core</span></label>
+          <label class="check-item"><input type="checkbox" name="identity" value="followers" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Followers</span><span class="check-tag tag-core">Core</span></label>
+          <div class="checklist-all">
+            <button class="select-all-btn" data-group="identity" data-action="all">Select all</button>
+            <button class="select-all-btn" data-group="identity" data-action="none">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card checklist-card">
+        <div class="checklist-header" data-group="career">
+          <div class="checklist-title-row">
+            <div class="checklist-icon icon-career">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#057642" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            </div>
+            <div>
+              <div class="checklist-title">Career Data</div>
+              <div class="checklist-count" id="count-career">5 of 5 selected</div>
+            </div>
+          </div>
+          <svg class="chevron open" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="checklist-body open" id="body-career">
+          <label class="check-item"><input type="checkbox" name="career" value="about" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">About / Summary</span><span class="check-tag tag-core">Core</span></label>
+          <label class="check-item"><input type="checkbox" name="career" value="experience" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Experience</span><span class="check-tag tag-rich">Rich</span></label>
+          <label class="check-item"><input type="checkbox" name="career" value="education" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Education</span><span class="check-tag tag-rich">Rich</span></label>
+          <label class="check-item"><input type="checkbox" name="career" value="skills" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Skills</span><span class="check-tag tag-rich">Rich</span></label>
+          <label class="check-item"><input type="checkbox" name="career" value="certifications" checked /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Certifications</span><span class="check-tag tag-rich">Rich</span></label>
+          <div class="checklist-all">
+            <button class="select-all-btn" data-group="career" data-action="all">Select all</button>
+            <button class="select-all-btn" data-group="career" data-action="none">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card checklist-card">
+        <div class="checklist-header" data-group="activity">
+          <div class="checklist-title-row">
+            <div class="checklist-icon icon-activity">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#915907" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <div class="checklist-title">Activity Data</div>
+              <div class="checklist-count" id="count-activity">0 of 4 selected</div>
+            </div>
+          </div>
+          <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="checklist-body" id="body-activity">
+          <label class="check-item"><input type="checkbox" name="activity" value="posts" /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Posts</span><span class="check-tag tag-beta">Beta</span></label>
+          <label class="check-item"><input type="checkbox" name="activity" value="comments" /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Comments</span><span class="check-tag tag-beta">Beta</span></label>
+          <label class="check-item"><input type="checkbox" name="activity" value="newsletters" /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Newsletters</span><span class="check-tag tag-beta">Beta</span></label>
+          <label class="check-item"><input type="checkbox" name="activity" value="documents" /><div class="checkmark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="check-label">Documents</span><span class="check-tag tag-beta">Beta</span></label>
+          <div class="checklist-all">
+            <button class="select-all-btn" data-group="activity" data-action="all">Select all</button>
+            <button class="select-all-btn" data-group="activity" data-action="none">Clear</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Export Format</div>
+    <div class="card" style="padding: 10px 12px;">
+      <div class="format-row">
+        <button class="format-btn active" data-format="csv">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          CSV
+        </button>
+        <button class="format-btn" data-format="json">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          JSON
+        </button>
+        <button class="format-btn" data-format="txt">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          TXT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section hidden" id="resultsSection">
+    <div class="section-label">Extracted Data</div>
+    <div class="card result-section" id="resultsCard"></div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="card progress-card">
+      <div class="progress-steps">
+        <div class="progress-step" data-step="scroll"><div class="step-dot">1</div><div class="step-name">Scroll</div></div>
+        <div class="progress-step" data-step="expand"><div class="step-dot">2</div><div class="step-name">Extract</div></div>
+        <div class="progress-step" data-step="parse"><div class="step-dot">3</div><div class="step-name">Parse</div></div>
+        <div class="progress-step" data-step="build"><div class="step-dot">4</div><div class="step-name">Save</div></div>
+        <div class="progress-step" data-step="done"><div class="step-dot">5</div><div class="step-name">Done</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">Starting extraction...</div>
+    </div>
+  </div>
+
+  <div class="action-footer">
+    <button class="btn-extract" id="btnExtract" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Start Extraction
+    </button>
+    <div class="footer-actions">
+      <button class="btn-secondary" id="btnExport" disabled>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="btn-secondary" id="btnCopy" disabled>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy JSON
+      </button>
+      <button class="btn-secondary" id="btnClear" disabled>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        Clear
+      </button>
+    </div>
+  </div>
+
+</div>
+<script src="sidepanel.js"></script>
+</body>
+</html>

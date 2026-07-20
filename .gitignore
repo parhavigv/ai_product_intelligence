@@ -1,0 +1,43 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Data files
+*.npy
+*.pkl
+*.index
+*.csv
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models (large files)
+*.bin
+*.safetensors
+*.onnx
+
+# Temporary
+*.tmp
+*.log
