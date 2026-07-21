@@ -10,3 +10,8 @@ Pillow>=10.0.0
 matplotlib>=3.7.0
 pandas>=2.0.0
 numpy>=1.24.0
+
+# ── Price Monitor Dependencies ──────────────
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+schedule>=1.2.0

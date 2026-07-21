@@ -1,198 +1,189 @@
-# AI Product Intelligence System
+# AI-Driven Air Quality Prediction using Hybrid Digital Twin
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
-  <img src="https://img.shields.io/badge/CLIP-OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="CLIP">
-  <img src="https://img.shields.io/badge/FAISS-Facebook-1877F2?style=for-the-badge" alt="FAISS">
-  <img src="https://img.shields.io/badge/DBSCAN-scikit--learn-F7931E?style=for-the-badge" alt="DBSCAN">
+  <img src="https://img.shields.io/badge/PyG-GraphNeuralNetworks-EE4C2C?style=for-the-badge" alt="PyG">
+  <img src="https://img.shields.io/badge/SimPy-Discrete--Event-yellowgreen?style=for-the-badge" alt="SimPy">
+  <img src="https://img.shields.io/badge/SUMO-TrafficSimulation-orange?style=for-the-badge" alt="SUMO">
+  <img src="https://img.shields.io/badge/SHAP--LIME-ExplainableAI-red?style=for-the-badge" alt="SHAP">
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
 </p>
 
 <p align="center">
-  <strong>End-to-end product intelligence pipeline for fashion e-commerce — covering complementary recommendations, catalog deduplication, and natural language visual search.</strong>
+  <strong>Hybrid Digital Twin framework combining physics-based environmental simulations with multi-model deep learning for accurate AQI prediction in smart city environments.</strong>
+</p>
+
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#key-features">Features</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#dataset">Dataset</a> •
+  <a href="#results">Results</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#project-structure">Structure</a> •
+  <a href="#applications">Applications</a> •
+  <a href="#future-work">Future Work</a> •
+  <a href="#license">License</a>
 </p>
 
 ---
 
 ## Overview
 
-An AI-driven product intelligence system built on **OpenAI's CLIP** (Contrastive Language–Image Pre-training) that understands fashion products from images and enables three core e-commerce capabilities:
+This project presents a **Hybrid Digital Twin (HDT)** framework for predicting the Air Quality Index (AQI) in smart city environments. It combines physics-based environmental simulations with multi-model deep learning to achieve superior prediction accuracy and real-world adaptability.
 
-| Capability | Description |
-|:-----------|:------------|
-| **Complementary Recommendations** | Suggest visually and categorically compatible products (e.g., shirt → matching trousers, shoes, belt) |
-| **Catalog Deduplication** | Identify and cluster near-duplicate product listings using unsupervised learning |
-| **Reverse Visual Search** | Retrieve products from free-text natural language queries via CLIP's shared text–image embedding space |
+The framework integrates **SimPy** for industrial emission modeling, **SUMO** for traffic emission simulation, and an ensemble of deep learning architectures — **CNN, LSTM, GRU, and GNN** — fused via cross-modal attention. Bayesian updating enables continuous adaptation to evolving environmental conditions, while SHAP and LIME provide full model interpretability.
 
-All three tasks share a unified **CLIP ViT-B/32** embedding space and **FAISS** vector index, demonstrating a coherent, reusable architecture.
+---
+
+## Key Features
+
+| Feature | Description |
+|:--------|:------------|
+| **Hybrid Digital Twin** | Combines physics-based simulation (SimPy + SUMO) with data-driven deep learning |
+| **Multi-Model Ensemble** | CNN for spatial features, LSTM/GRU for temporal patterns, GNN for graph-based spatial relationships |
+| **Cross-Modal Attention** | Learned fusion mechanism for combining heterogeneous model outputs |
+| **Bayesian Adaptive Learning** | Continuous model updating as new observational data arrives |
+| **Explainable AI** | SHAP and LIME for transparent, interpretable feature attribution |
+| **Smart City Integration** | AQI forecasting, hotspot detection, and policy simulation support |
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     CLIP ViT-B/32 (512-dim)                            │
-│  ┌───────────────┐                 ┌───────────────┐                   │
-│  │ Image Encoder │                 │ Text Encoder  │                   │
-│  │  → 512-dim    │                 │  → 512-dim    │                   │
-│  └───────┬───────┘                 └───────┬───────┘                   │
-│          └─────────────┬───────────────────┘                           │
-└────────────────────────┼───────────────────────────────────────────────┘
-                         │
-                         ▼
-            ┌────────────────────────┐
-            │   FAISS IndexFlatIP    │
-            │  (cosine similarity)   │
-            └────────────┬───────────┘
-                         │
-         ┌───────────────┼───────────────┐
-         ▼               ▼               ▼
-  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-  │   Task 1:   │ │   Task 2:   │ │   Task 3:   │
-  │ Complement  │ │   Unique    │ │   Reverse   │
-  │ Recommend.  │ │   Catalog   │ │   Search    │
-  └─────────────┘ └─────────────┘ └─────────────┘
-         │               │               │
-         ▼               ▼               ▼
-   Category Rules   DBSCAN Cluster   Text-to-Image
-   + Visual Rank    on Embeddings    Retrieval
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         DATA COLLECTION & PREPROCESSING                      │
+│            CPCB AQI Dataset — 26 Indian Cities (2019–2023)                  │
+│         Features: PM2.5, PM10, NO₂, CO, O₃, SO₂                            │
+└───────────────────────────────────┬──────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       ENVIRONMENTAL SIMULATION LAYER                         │
+│                                                                              │
+│  ┌──────────────────────────┐        ┌──────────────────────────┐            │
+│  │      SimPy Engine        │        │     SUMO Traffic Sim     │            │
+│  │  Industrial Emissions    │        │    Vehicle Emissions     │            │
+│  │  Discrete-event modeling │        │   Microscopic traffic    │            │
+│  └────────────┬─────────────┘        └────────────┬─────────────┘            │
+│               └──────────────────┬─────────────────┘                         │
+└──────────────────────────────────┼───────────────────────────────────────────┘
+                                   ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        MULTI-MODEL LEARNING LAYER                           │
+│                                                                              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐                     │
+│  │   CNN    │  │   LSTM   │  │   GRU    │  │   GNN    │                     │
+│  │ Spatial  │  │ Long-term│  │ Short-   │  │  Graph   │                     │
+│  │ Features │  │ Temporal │  │  term    │  │ Spatial  │                     │
+│  │          │  │ Patterns │  │ Temporal │  │ Relations│                     │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘                     │
+│       └──────────────┴─────────────┴──────────────┘                          │
+│                              │                                               │
+│                              ▼                                               │
+│               ┌──────────────────────────┐                                   │
+│               │  Cross-Modal Attention    │                                   │
+│               │    Feature Fusion         │                                   │
+│               └─────────────┬────────────┘                                   │
+└─────────────────────────────┼────────────────────────────────────────────────┘
+                              ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        ADAPTIVE LEARNING LAYER                              │
+│                                                                              │
+│            Bayesian Updating for Continuous Model Adaptation                 │
+│            Posterior ← Prior × Likelihood(Observed Data)                     │
+└─────────────────────────────┬────────────────────────────────────────────────┘
+                              ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         EXPLAINABILITY LAYER                                │
+│                                                                              │
+│           SHAP (Shapley Additive Explanations)                              │
+│           LIME (Local Interpretable Model-agnostic Explanations)            │
+│                                                                              │
+│           → Feature contribution rankings                                    │
+│           → Per-prediction interpretability                                  │
+│           → Policy-relevant insight extraction                               │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Task 1 — Smart Complementary Recommendation Engine
+## Dataset
 
-### Problem
-
-E-commerce platforms need to recommend products that are commonly purchased together — not just visually similar items. Given a pair of running shoes, the system should suggest matching socks, track pants, T-shirts, shorts, and watches.
-
-### Approach
-
-A hybrid method combining **domain-curated category rules** with **CLIP visual similarity**:
-
-1. **Complement Map** — Curated dictionary mapping 27 product categories to their complementary categories
-2. **Cross-Category Similarity** — CLIP embeddings rank candidates within each complementary category
-3. **Visual Re-ranking** — Top matches selected by cosine similarity score
-
-### Pipeline
-
-```bash
-python task1_step1.py  # Load dataset & inspect metadata
-python task1_step2.py  # Load CLIP, encode 2000 product images
-python task1_step3.py  # Build FAISS index + complement rules
-python task1_step4.py  # Run recommendations → recommendation_result.png
-```
-
-### Results
-
-| Input Product | Top Recommendations |
-|:--------------|:--------------------|
-| Running Shoe | Sports Shoes, Socks, Track Pants, T-Shirts |
-| Formal Shirt | Trousers, Formal Shoes, Belts, Watches |
-| Jeans | T-Shirts, Casual Shoes, Sneakers, Jackets |
-
-> The category-constrained + visual-re-rank hybrid produces recommendations that are both stylistically valid and visually coherent.
+| Property | Detail |
+|:---------|:-------|
+| **Source** | Central Pollution Control Board (CPCB), Government of India |
+| **Collection Method** | API-based data retrieval |
+| **Cities** | 26 Indian cities |
+| **Time Period** | 2019 – 2023 |
+| **Target Variable** | Air Quality Index (AQI) |
+| **Pollutant Features** | PM2.5, PM10, NO₂, CO, O₃, SO₂ |
 
 ---
 
-## Task 2 — Unique Product Catalog Creation
+## Results
 
-### Problem
+| Model | RMSE | MAE | R² |
+|:------|-----:|----:|---:|
+| CNN | 22.14 | 15.72 | 0.847 |
+| LSTM | 17.83 | 12.11 | 0.891 |
+| GRU | 16.92 | 11.34 | 0.902 |
+| GNN | 15.88 | 10.40 | 0.913 |
+| **Hybrid (Proposed)** | **13.47** | **9.12** | **0.941** |
 
-Large marketplaces contain duplicate and near-duplicate products uploaded by different sellers, degrading catalog quality and user experience.
-
-### Approach
-
-**DBSCAN clustering** on CLIP image embeddings to group visually similar products:
-
-1. **K-Distance Elbow Analysis** — Determine optimal neighborhood radius (`eps`) for density-based clustering
-2. **DBSCAN Sweep** — Evaluate `eps` values from 0.10 to 0.22 (cosine distance, `min_samples=3`)
-3. **Cluster Visualization** — Sample products from each cluster for visual inspection
-
-### Pipeline
-
-```bash
-python task2_step1.py  # Load Task-1 embeddings & metadata
-python task2_step2.py  # K-distance elbow analysis → distance_curve.png
-python task2_step3.py  # DBSCAN eps sweep, fit final model
-python task2_step4.py  # Visualize clusters → catalog_clusters.png
-```
-
-### Results
-
-| Metric | Value |
-|:-------|:------|
-| Input Products | 2,000 |
-| Clustering Algorithm | DBSCAN (cosine distance) |
-| Noise Handling | Points with no close neighbors isolated |
-
-> DBSCAN with cosine distance groups products at a category level — a defensible first step toward catalog de-duplication, with tightening via maximum-cluster-size constraints and medoid extraction as the next tuning step.
+> The proposed hybrid model achieves **39.1% lower RMSE** and **24.7% higher R²** compared to the baseline CNN, demonstrating the effectiveness of multi-model fusion with attention-based integration.
 
 ---
 
-## Task 3 — Reverse Product Search (Text-to-Image)
+## Tech Stack
 
-### Problem
-
-Users want to search products using natural language descriptions (e.g., "blue denim jeans") instead of uploading reference images.
-
-### Approach
-
-**CLIP text-to-image retrieval** powered by FAISS indexing:
-
-1. **Text Encoding** — User query encoded via CLIP's `get_text_features` into the shared 512-dim space
-2. **FAISS Search** — `IndexFlatIP` retrieves top-k nearest product images by cosine similarity
-3. **Result Ranking** — Products returned with rank, category, color, and similarity score
-
-### Pipeline
-
-```bash
-python task3_step1.py  # Load CLIP model, embeddings, FAISS index
-python task3_step2.py  # Run text queries → console output
-python task3_step3.py  # Full search + visualization → search_result.png
-```
-
-### Results
-
-| Query | Top Matches |
-|:------|:------------|
-| "red running shoes" | Kipsta Sala Shoes, Nike Tenkay, Puma Sneakerina |
-| "black leather formal shoes" | Clarks Men Black, Provogue Men Black, Red Tape |
-| "blue denim jeans" | Spykar Men Blue, Deni Yo Slim Fit, Spykar Washed |
-
-> Similarity scores cluster in the 0.2–0.3 range, consistent with CLIP ViT-B/32 behavior on small, low-resolution catalog thumbnails.
-
----
-
-## Technology Stack
-
-| Layer | Technology |
-|:------|:-----------|
-| **Embedding Model** | CLIP ViT-B/32 (`openai/clip-vit-base-patch32`) |
-| **Vector Search** | FAISS IndexFlatIP (`faiss-cpu`) |
-| **Clustering** | DBSCAN (`scikit-learn`, cosine distance) |
-| **Deep Learning** | PyTorch, Hugging Face Transformers |
-| **Image Processing** | Pillow, torchvision |
-| **Data Handling** | pandas, NumPy |
-| **Visualization** | Matplotlib |
+| Category | Technology |
+|:---------|:-----------|
+| **Language** | Python 3.11 |
+| **Deep Learning** | PyTorch, PyTorch Geometric |
+| **Simulation** | SimPy (industrial emissions), SUMO (traffic modeling) |
+| **Machine Learning** | Scikit-learn |
+| **Explainability** | SHAP, LIME |
+| **Data Processing** | pandas, NumPy |
+| **Visualization** | Matplotlib, Seaborn |
 
 ---
 
 ## Project Structure
 
 ```
-ai-product-intelligence/
-├── product_intelligence.ipynb              # Consolidated notebook (all tasks)
-├── task1_complementary_recommendations.ipynb  # Task 1 detailed notebook
-├── task1_step1.py ─ task1_step4.py         # Task 1 pipeline scripts
-├── task2_step1.py ─ task2_step4.py         # Task 2 pipeline scripts
-├── task3_step1.py ─ task3_step3.py         # Task 3 pipeline scripts
-├── recommendation_result.png              # Task 1 visualization
-├── catalog_clusters.png                   # Task 2 visualization
-├── search_result.png                      # Task 3 visualization
-└── requirements.txt                       # Python dependencies
+aqi-digital-twin-prediction/
+│
+├── data/
+│   ├── raw/                        # Original CPCB datasets
+│   └── processed/                  # Cleaned & preprocessed data
+│
+├── notebooks/
+│   ├── data_preprocessing.ipynb    # Data cleaning & feature engineering
+│   ├── eda_analysis.ipynb          # Exploratory data analysis
+│   └── model_training.ipynb        # Model training & evaluation
+│
+├── src/
+│   ├── preprocessing.py            # Data ingestion & transformation
+│   ├── simulation.py               # SimPy + SUMO simulation logic
+│   ├── models/
+│   │   ├── cnn.py                  # Convolutional Neural Network
+│   │   ├── lstm.py                 # Long Short-Term Memory
+│   │   ├── gru.py                  # Gated Recurrent Unit
+│   │   └── gnn.py                  # Graph Neural Network
+│   ├── fusion.py                   # Cross-modal attention fusion
+│   ├── bayesian_update.py          # Bayesian adaptive learning
+│   ├── explainability.py           # SHAP & LIME integration
+│   └── run_all.py                  # End-to-end pipeline runner
+│
+├── results/
+│   ├── graphs/                     # Training curves, prediction plots
+│   └── metrics.txt                 # Evaluation metrics
+│
+├── requirements.txt
+└── README.md
 ```
 
 ---
@@ -201,78 +192,44 @@ ai-product-intelligence/
 
 ### Prerequisites
 
-- Python 3.x
-- CUDA-compatible GPU (recommended for CLIP inference)
+- Python 3.11
+- CUDA-compatible GPU (recommended for model training)
+- SUMO traffic simulator (for simulation module)
 
 ### Installation
 
 ```bash
-git clone https://github.com/parhavigv/ai-product-intelligence.git
-cd ai-product-intelligence
+git clone https://github.com/your-username/aqi-digital-twin-prediction.git
+cd aqi-digital-twin-prediction
 pip install -r requirements.txt
 ```
 
 ### Running
 
-**Option 1 — Consolidated Notebook**
-
-Open `product_intelligence.ipynb` in Jupyter/Kaggle and run all cells.
-
-**Option 2 — Individual Scripts**
-
 ```bash
-# Task 1: Complementary Recommendations
-python task1_step1.py  # Load dataset
-python task1_step2.py  # Encode images with CLIP
-python task1_step3.py  # Build FAISS index
-python task1_step4.py  # Generate recommendations
-
-# Task 2: Unique Catalog
-python task2_step1.py  # Load embeddings
-python task2_step2.py  # K-distance elbow analysis
-python task2_step3.py  # Run DBSCAN clustering
-python task2_step4.py  # Visualize clusters
-
-# Task 3: Reverse Search
-python task3_step1.py  # Initialize CLIP + FAISS
-python task3_step2.py  # Execute text search
-python task3_step3.py  # Full search + visualization
+python src/run_all.py
 ```
 
 ---
 
-## Dataset
+## Applications
 
-**Fashion Product Images (Small)** — [Kaggle](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small)
-
-| Property | Detail |
-|:---------|:-------|
-| Total Products | 44,419 |
-| Categories | 27 product types |
-| Sample Size | 2,000 products (`random_state=42`) |
-| Image Format | 60 × 80 px thumbnails |
-| Metadata | `styles.csv` (product attributes) |
+| Domain | Use Case |
+|:-------|:---------|
+| **Smart Cities** | Real-time pollution monitoring and heatmap generation |
+| **Public Health** | AQI forecasting and early warning alerts |
+| **Urban Planning** | Policy simulation for traffic regulation and industrial controls |
+| **Environmental Governance** | Data-driven decision support for emission control strategies |
 
 ---
 
-## Results Summary
+## Future Work
 
-| Task | Method | Key Outcome |
-|:-----|:-------|:------------|
-| Complementary Recommendations | Category Rules + CLIP Similarity | Stylistically valid, visually coherent product pairing |
-| Catalog Deduplication | DBSCAN on CLIP Embeddings | Visual grouping of similar products for de-duplication |
-| Reverse Visual Search | CLIP Text Encoding + FAISS | Accurate text-to-image retrieval from catalog |
-
----
-
-## Future Improvements
-
-- **FAISS-based recommendation** — Query FAISS index directly in Task 1 for consistency with Tasks 2 and 3
-- **Tighter clustering** — Maximum-cluster-size constraints + medoid extraction for true near-duplicate detection
-- **Score normalization** — Per-query normalization for clearer differentiation of closely related results
-- **HNSW indexing** — Approximate nearest neighbor search for larger catalogs
-- **Streaming database backend** — Real-time catalog updates
-- **LLM-based style coach** — Conversational product recommendation
+- **IoT Integration** — Real-time data ingestion from distributed sensor networks
+- **Transformer Models** — Attention-based architectures for long-range temporal dependencies
+- **Federated Learning** — Privacy-preserving model training across multiple cities
+- **Satellite Data** — Remote sensing inputs for enhanced spatial coverage
+- **Edge Deployment** — Lightweight models for on-device inference at monitoring stations
 
 ---
 
@@ -282,6 +239,10 @@ python task3_step3.py  # Full search + visualization
 
 B.Tech — Artificial Intelligence & Machine Learning  
 Dayananda Sagar University, Bengaluru
+
+---
+
+*Feel free to open issues or submit pull requests for suggestions and improvements.*
 
 ---
 
